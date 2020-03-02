@@ -12,7 +12,7 @@ PlayerTerminal::PlayerTerminal()
         SDL_WINDOWPOS_UNDEFINED,
         config().windowWidth,
         config().windowHeight,
-        SDL_WINDOW_BORDERLESS));
+        0));
     if (!_window) {
         throw SdlException{};
     }

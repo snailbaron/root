@@ -1,0 +1,3 @@
+[submodule "deps/aseprite"]
+	path = deps/aseprite
+	url = https://github.com/aseprite/aseprite.git

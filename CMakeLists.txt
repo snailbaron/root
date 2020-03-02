@@ -14,4 +14,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SDL2)
 
+add_subdirectory(assets)
+add_subdirectory(deps)
 add_subdirectory(src)

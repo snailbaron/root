@@ -16,11 +16,12 @@ add_custom_command(
         $<TARGET_FILE:aseprite>
             --batch
             --data ${gfx_meta_file}
-            --filename-format "{title}-{frame}"
+            --filename-format "{title}:{tag}:{tagframe}"
             --format json-array
             --sheet ${gfx_data_file}
             --sheet-type packed
-    DEPENDS aseprite
+            ${aseprite_assets}
+    DEPENDS aseprite ${aseprite_assets}
 )
 
 add_custom_target(

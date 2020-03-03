@@ -1,10 +1,12 @@
 #pragma once
 
+#include <evening.hpp>
+
 #include <SDL.h>
 
 #include <memory>
 
-class PlayerTerminal {
+class PlayerTerminal : public evening::Subscriber {
 public:
     PlayerTerminal();
 

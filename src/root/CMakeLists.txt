@@ -14,4 +14,5 @@ target_link_libraries(
             SDL2
             SDL2main
             nlohmann_json::nlohmann_json
+            evening
 )

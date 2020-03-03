@@ -93,6 +93,11 @@ public:
         return _components;
     }
 
+    auto& components()
+    {
+        return _components;
+    }
+
     const auto& entities() const
     {
         return _entities;
@@ -145,6 +150,12 @@ public:
 
     template <class ComponentType>
     const auto& components() const
+    {
+        return componentManager<ComponentType>().components();
+    }
+
+    template <class ComponentType>
+    auto& components()
     {
         return componentManager<ComponentType>().components();
     }

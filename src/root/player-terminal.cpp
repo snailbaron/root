@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "events.hpp"
 #include "exceptions.hpp"
 #include "player-terminal.hpp"
 
@@ -24,6 +25,9 @@ PlayerTerminal::PlayerTerminal()
     if (!_renderer) {
         throw SdlException{};
     }
+
+    subscribe<PositionUpdate>(worldEvents, [] (const auto& positionUpdate) {
+    });
 }
 
 bool PlayerTerminal::isAlive() const

@@ -24,7 +24,7 @@ int main()
 
         auto framesPassed = timer();
         for (auto i = framesPassed; i > 0; i--) {
-            world.update(timer.delta());
+            world.update(Time{timer.delta()});
         }
 
         playerTerminal.update(framesPassed * timer.delta());

@@ -1,12 +1,17 @@
 #pragma once
 
 #include "entity-system.hpp"
+#include "events.hpp"
 #include "world-units.hpp"
 
-class World {
+#include <evening.hpp>
+
+class World : public evening::Subscriber {
 public:
+    World();
+
     void update(Time delta);
 
 private:
-    EntityManager _entities;
+    EntityManager _es;
 };

@@ -6,7 +6,9 @@
 #include <evening.hpp>
 
 evening::Channel worldEvents;
-evening::Channel clientEvents;
+evening::Channel clientRequests;
+
+struct SpawnPlayer {};
 
 struct PositionUpdate {
     Entity entity;

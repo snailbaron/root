@@ -26,7 +26,7 @@ PlayerTerminal::PlayerTerminal()
         throw SdlException{};
     }
 
-    subscribe<PositionUpdate>(worldEvents, [] (const auto& positionUpdate) {
+    subscribe<PositionUpdate>(worldEvents, [] (const auto& /*positionUpdate*/) {
     });
 }
 

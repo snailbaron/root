@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cstdint>
-#include <deque>
-
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
+#include <deque>
+#include <functional>
 #include <iterator>
 #include <map>
 #include <memory>
@@ -21,7 +21,15 @@ public:
 
     explicit Entity(ValueType id) : _id(id) {}
 
-    operator ValueType() const { return _id; }
+    ValueType operator*() const
+    {
+        return _id;
+    }
+
+    operator ValueType() const
+    {
+        return **this;
+    }
 
     friend bool operator==(Entity lhs, Entity rhs)
     {
@@ -57,6 +65,17 @@ private:
     ValueType _id;
 };
 
+namespace std {
+
+template <> struct hash<Entity> {
+    std::size_t operator()(const Entity& entity) const noexcept
+    {
+        return std::hash<Entity::ValueType>{}(*entity);
+    }
+};
+
+} // namespace std
+
 class EntityPool {
 public:
     Entity createEntity();
@@ -78,14 +97,22 @@ class ComponentManager : public BaseComponentManager {
     static_assert(std::is_default_constructible<ComponentType>());
 
 public:
-    const ComponentType& component(Entity entity) const
+    const ComponentType* component(Entity entity) const
     {
-        return _components.at(_indexByEntity.at(entity));
+        if (auto it = _indexByEntity.find(entity); it != _indexByEntity.end()) {
+            return &_components.at(it->second);
+        } else {
+            return nullptr;
+        }
     }
 
-    ComponentType& component(Entity entity)
+    ComponentType* component(Entity entity)
     {
-        return _components.at(_indexByEntity.at(entity));
+        if (auto it = _indexByEntity.find(entity); it != _indexByEntity.end()) {
+            return &_components.at(it->second);
+        } else {
+            return nullptr;
+        }
     }
 
     const auto& components() const
@@ -137,21 +164,9 @@ private:
 class EntityManager {
 public:
     template <class ComponentType>
-    const ComponentType& component(Entity entity) const
+    ComponentType* component(Entity entity)
     {
         return componentManager<ComponentType>().component(entity);
-    }
-
-    template <class ComponentType>
-    ComponentType& component(Entity entity)
-    {
-        return componentManager<ComponentType>().component(entity);
-    }
-
-    template <class ComponentType>
-    const auto& components() const
-    {
-        return componentManager<ComponentType>().components();
     }
 
     template <class ComponentType>
@@ -161,7 +176,7 @@ public:
     }
 
     template <class ComponentType>
-    const auto& entities() const
+    auto& entities()
     {
         return componentManager<ComponentType>().entities();
     }
@@ -196,7 +211,7 @@ private:
                 std::make_unique<ComponentManager<ComponentType>>()});
             foundIt = insertedIt;
         }
-        return static_cast<ComponentManager<ComponentType>&>(foundIt->second);
+        return static_cast<ComponentManager<ComponentType>&>(*foundIt->second);
     }
 
     EntityPool _entityPool;

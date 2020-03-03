@@ -5,5 +5,9 @@
 struct MovementComponent {
     Position position;
     Velocity velocity;
-    Acceleration acceleration;
+    Speed maxSpeed;
+};
+
+struct PlayerControlComponent {
+    Acceleration force;
 };

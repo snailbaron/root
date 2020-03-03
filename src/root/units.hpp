@@ -1,24 +1,47 @@
 #pragma once
 
-#include <utility>
+#include <type_traits>
 
 namespace units {
 
 template <class Type, int L, int M, int T>
 class Unit {
+    static_assert(std::is_arithmetic<Type>());
+
 public:
-    explicit constexpr Unit(Type&& value)
-        : _value(std::forward(value))
+    Unit()
+        : _value()
     { }
 
-    constexpr const Type& operator*() const
+    explicit constexpr Unit(Type value)
+        : _value(value)
+    { }
+
+    template <class U, class = std::enable_if_t<std::is_convertible_v<U, Type>>>
+    Unit(Unit<U, L, M, T> other)
+        : _value(other._value)
+    { }
+
+    Type operator*() const
     {
         return _value;
+    }
+
+    Unit& operator+=(const Unit& other)
+    {
+        _value += other._value;
+        return *this;
     }
 
 private:
     Type _value;
 };
+
+template <class Type, int L1, int M1, int T1, int L2, int M2, int T2>
+auto operator*(Unit<Type, L1, M1, T1> lhs, Unit<Type, L2, M2, T2> rhs)
+{
+    return Unit<Type, L1 + L2, M1 + M2, T1 + T2>{*lhs * *rhs};
+}
 
 template <class Type>
 using Length = Unit<Type, 1, 0, 0>;

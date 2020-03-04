@@ -1,9 +1,12 @@
 add_executable(
     root
+        camera.cpp
         entity-system.cpp
-        frame_timer.cpp
         main.cpp
         player-terminal.cpp
+        resources.cpp
+        sprite.cpp
+        timers.cpp
         world.cpp
 )
 

@@ -1,9 +1,14 @@
 #pragma once
 
+#include "camera.hpp"
+#include "entity-system.hpp"
+#include "sprite.hpp"
+
 #include <evening.hpp>
 
 #include <SDL.h>
 
+#include <map>
 #include <memory>
 
 class PlayerTerminal : public evening::Subscriber {
@@ -20,4 +25,7 @@ private:
     std::unique_ptr<SDL_Window, void(*)(SDL_Window*)> _window;
     std::unique_ptr<SDL_Renderer, void(*)(SDL_Renderer*)> _renderer;
     bool _isAlive = true;
+
+    std::map<Entity, Sprite> _sprites;
+    Camera _camera;
 };

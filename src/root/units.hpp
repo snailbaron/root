@@ -13,7 +13,17 @@ public:
         : _value()
     { }
 
-    explicit constexpr Unit(Type value)
+    template <
+        int _L = L, int _M = M, int _T = T,
+        class = std::enable_if_t<_L == 0 && _M == 0 && _T == 0>>
+    constexpr Unit(Type value)
+        : _value(value)
+    { }
+
+    template <
+        int _L = L, int _M = M, int _T = T,
+        class = std::enable_if_t<_L != 0 || _M != 0 || _T != 0>>
+    constexpr explicit Unit(Type value)
         : _value(value)
     { }
 
@@ -33,9 +43,29 @@ public:
         return *this;
     }
 
+    Unit& operator-=(const Unit& other)
+    {
+        _value -= other._value;
+        return *this;
+    }
+
 private:
     Type _value;
 };
+
+template <class Type, int L, int M, int T>
+auto operator+(Unit<Type, L, M, T> lhs, const Unit<Type, L, M, T>& rhs)
+{
+    lhs += rhs;
+    return lhs;
+}
+
+template <class Type, int L, int M, int T>
+auto operator-(Unit<Type, L, M, T> lhs, const Unit<Type, L, M, T>& rhs)
+{
+    lhs -= rhs;
+    return lhs;
+}
 
 template <class Type, int L1, int M1, int T1, int L2, int M2, int T2>
 auto operator*(Unit<Type, L1, M1, T1> lhs, Unit<Type, L2, M2, T2> rhs)

@@ -10,7 +10,12 @@ evening::Channel clientRequests;
 
 struct SpawnPlayer {};
 
-struct PositionUpdate {
+struct PositionUpdated {
+    Entity entity;
+    Position position;
+};
+
+struct PlayerSpawned {
     Entity entity;
     Position position;
 };

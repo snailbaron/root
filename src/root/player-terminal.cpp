@@ -26,7 +26,18 @@ PlayerTerminal::PlayerTerminal()
         throw SdlException{};
     }
 
-    subscribe<PositionUpdate>(worldEvents, [] (const auto& /*positionUpdate*/) {
+    _camera.hspan(Length{config().cameraHorizontalSpanMeters});
+    _camera.vspan(
+        _camera.hspan() * config().windowHeight / config().windowWidth);
+    _camera.screenSize({config().windowWidth, config().windowHeight});
+
+    subscribe<PlayerSpawned>(worldEvents, [this] (const auto& playerSpawned) {
+        auto sprite = createSprite(Bitmap::Farmer);
+        sprite.position = playerSpawned.position;
+        _sprites[playerSpawned.entity] = std::move(sprite);
+    });
+    subscribe<PositionUpdated>(worldEvents, [this] (const auto& e) {
+        _sprites.at(e.entity).position = e.position;
     });
 }
 
@@ -55,6 +66,10 @@ void PlayerTerminal::render()
 {
     SDL_SetRenderDrawColor(_renderer.get(), 50, 50, 50, 255);
     SDL_RenderClear(_renderer.get());
+
+    for (const auto& [entity, sprite] : _sprites) {
+        sprite.draw(_renderer.get(), _camera);
+    }
 
     SDL_RenderPresent(_renderer.get());
 }

@@ -1,4 +1,6 @@
-#include "frame_timer.hpp"
+#include "timers.hpp"
+
+#include <cmath>
 
 FrameTimer::FrameTimer(int fps)
     : _delta(1.f / fps)
@@ -20,4 +22,15 @@ int FrameTimer::operator()()
     auto frameDiff = currentFrame - _lastFrame;
     _lastFrame = currentFrame;
     return static_cast<int>(frameDiff);
+}
+
+FrameCounter::FrameCounter(float frameDuration)
+    : _frameDuration(frameDuration)
+{ }
+
+int FrameCounter::update(float delta)
+{
+    int framesPassed = static_cast<int>(_remainder + delta);
+    _remainder = std::fmod(_remainder + delta, _frameDuration);
+    return framesPassed;
 }

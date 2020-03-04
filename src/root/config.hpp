@@ -7,6 +7,7 @@ struct Config {
     int windowWidth = 1024;
     int windowHeight = 768;
     int fps = 60;
+    float cameraHorizontalSpanMeters = 10.0f;
 
 private:
     Config() {}

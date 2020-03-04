@@ -16,3 +16,14 @@ private:
     Clock::time_point _startTime;
     Clock::duration _frameDuration;
 };
+
+class FrameCounter {
+public:
+    FrameCounter(float frameDuration);
+
+    int update(float delta);
+
+private:
+    const float _frameDuration;
+    float _remainder = 0;
+};

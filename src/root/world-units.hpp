@@ -1,10 +1,11 @@
-
 #pragma once
 
 #include "geometry.hpp"
 #include "units.hpp"
 
+using Length = units::Length<float>;
 using Position = geometry::Vector<units::Length<float>>;
+using WorldRect = geometry::Vector<units::Length<float>>;
 
 using Speed = units::Speed<float>;
 constexpr Speed operator "" _mps(long double mps)

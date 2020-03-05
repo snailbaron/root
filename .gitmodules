@@ -7,3 +7,6 @@
 [submodule "deps/evening"]
 	path = deps/evening
 	url = https://github.com/snailbaron/evening.git
+[submodule "deps/SFML"]
+	path = deps/SFML
+	url = https://github.com/SFML/SFML.git

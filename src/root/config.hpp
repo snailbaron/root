@@ -4,8 +4,8 @@
 
 struct Config {
     std::string windowTitle = "Root";
-    int windowWidth = 1024;
-    int windowHeight = 768;
+    unsigned windowWidth = 1024;
+    unsigned windowHeight = 768;
     int fps = 60;
     float cameraHorizontalSpanMeters = 10.0f;
 

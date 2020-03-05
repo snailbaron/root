@@ -5,8 +5,8 @@
 
 #include <evening.hpp>
 
-evening::Channel worldEvents;
-evening::Channel clientRequests;
+inline evening::Channel worldEvents;
+inline evening::Channel clientRequests;
 
 struct SpawnPlayer {};
 

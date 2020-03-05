@@ -1,18 +1,20 @@
+#include "assert.hpp"
 #include "config.hpp"
-#include "exceptions.hpp"
 #include "player-terminal.hpp"
 #include "timers.hpp"
+#include "util.hpp"
 #include "world.hpp"
 
-#include <SDL.h>
+#include <filesystem>
 
-int main()
+namespace fs = std::filesystem;
+
+int main(int argc, char* argv[])
 {
-    auto world = World{};
+    ASSERT(argc > 0);
+    dataPath(fs::path{argv[0]});
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
-        throw SdlException{};
-    }
+    auto world = World{};
 
     auto playerTerminal = PlayerTerminal{};
     auto timer = FrameTimer{config().fps};
@@ -30,6 +32,4 @@ int main()
         playerTerminal.update(framesPassed * timer.delta());
         playerTerminal.render();
     }
-
-    SDL_Quit();
 }

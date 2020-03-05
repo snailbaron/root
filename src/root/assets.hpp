@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <map>
+#include <string>
 #include <vector>
 
 enum class Bitmap {
@@ -10,30 +12,12 @@ enum class Bitmap {
     Grass,
 };
 
-struct Frame {
-    int x;
-    int y;
-    int w;
-    int h;
-};
-
-std::vector<Frame> bitmapFrames(Bitmap bitmapId)
+inline Bitmap bitmapByName(const std::string& bitmapName)
 {
-    switch (bitmapId) {
-        case Bitmap::FarmerStandingDown:
-            return {
-                {0, 0, 16, 16},
-            };
-        case Bitmap::FarmerWalkingUp:
-            return {
-                {0, 0, 16, 16},
-                {0, 16, 16, 16},
-            };
-        case Bitmap::Grass:
-            return {
-                {16, 16, 16, 16},
-            };
-        default:
-            return {};
-    }
+    std::map<std::string, Bitmap> mapping {
+        {"farmer-standing-down", Bitmap::FarmerStandingDown},
+        {"farmer-walking-up", Bitmap::FarmerWalkingUp},
+        {"grass", Bitmap::Grass},
+    };
+    return mapping.at(bitmapName);
 }

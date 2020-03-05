@@ -6,10 +6,4 @@
 Sprite createSprite(Bitmap bitmapId)
 {
     auto frames = bitmapFrames(bitmapId);
-
-
-
-
-
-
 }

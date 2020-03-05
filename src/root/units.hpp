@@ -1,5 +1,7 @@
 #pragma once
 
+#include "type_traits.hpp"
+
 #include <type_traits>
 
 namespace units {
@@ -9,21 +11,23 @@ class Unit {
     static_assert(std::is_arithmetic<Type>());
 
 public:
-    Unit()
-        : _value()
-    { }
+    Unit() {}
 
     template <
-        int _L = L, int _M = M, int _T = T,
-        class = std::enable_if_t<_L == 0 && _M == 0 && _T == 0>>
-    constexpr Unit(Type value)
+        class U,
+        std::enable_if_t<
+            std::is_convertible_v<U, Type> && L == 0 && M == 0 && T == 0,
+            int> = 0>
+    constexpr Unit(U value)
         : _value(value)
     { }
 
     template <
-        int _L = L, int _M = M, int _T = T,
-        class = std::enable_if_t<_L != 0 || _M != 0 || _T != 0>>
-    constexpr explicit Unit(Type value)
+        class U,
+        std::enable_if_t<
+            std::is_same_v<U, Type> && (L != 0 || M != 0 || T != 0),
+            int> = 0>
+    constexpr explicit Unit(U value)
         : _value(value)
     { }
 
@@ -49,8 +53,26 @@ public:
         return *this;
     }
 
+    template <
+        class S,
+        class = std::enable_if_t<std::is_convertible_v<S, Type>>>
+    Unit& operator*=(const S& scalar)
+    {
+        _value *= scalar;
+        return *this;
+    }
+
+    template <
+        class S,
+        class = std::enable_if_t<std::is_convertible_v<S, Type>>>
+    Unit& operator/=(const S& scalar)
+    {
+        _value /= scalar;
+        return *this;
+    }
+
 private:
-    Type _value;
+    Type _value {};
 };
 
 template <class Type, int L, int M, int T>
@@ -71,6 +93,24 @@ template <class Type, int L1, int M1, int T1, int L2, int M2, int T2>
 auto operator*(Unit<Type, L1, M1, T1> lhs, Unit<Type, L2, M2, T2> rhs)
 {
     return Unit<Type, L1 + L2, M1 + M2, T1 + T2>{*lhs * *rhs};
+}
+
+template <class Type, int L, int M, int T, class S>
+auto operator*(Unit<Type, L, M, T> unit, S scalar)
+{
+    return Unit<mul_type_t<Type, S>, L, M, T>{*unit * scalar};
+}
+
+template <class Type, int L1, int M1, int T1, int L2, int M2, int T2>
+auto operator/(Unit<Type, L1, M1, T1> lhs, Unit<Type, L2, M2, T2> rhs)
+{
+    return Unit<Type, L1 - L2, M1 - M2, T1 - T2>{*lhs / *rhs};
+}
+
+template <class Type, int L, int M, int T, class S>
+auto operator/(Unit<Type, L, M, T> unit, S scalar)
+{
+    return Unit<div_type_t<Type, S>, L, M, T>{*unit / scalar};
 }
 
 template <class Type>

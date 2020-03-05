@@ -33,5 +33,7 @@ std::vector<Frame> bitmapFrames(Bitmap bitmapId)
             return {
                 {16, 16, 16, 16},
             };
+        default:
+            return {};
     }
 }

@@ -7,7 +7,7 @@ Length Camera::hspan() const
 
 void Camera::hspan(Length hspan)
 {
-    auto centerPosition = _topLeftCorner + _span / 2;
+    auto centerPosition = _topLeftCorner + _span / 2.f;
     _span.x = hspan;
     this->position(centerPosition);
 }
@@ -36,8 +36,8 @@ void Camera::position(const Position& centerPosition)
 
 ScreenPoint Camera::project(Position position) const
 {
-    return {
-        (position.x - _topLeftCorner.x) * _screenSize.x / _span.x,
-        (_topLeftCorner.y - position.y) * _screenSize.y / _span.y
-    };
+    ScreenPoint p;
+    p.x = *((position.x - _topLeftCorner.x) * _screenSize.w / _span.x);
+    p.y = *((_topLeftCorner.y - position.y) * _screenSize.h / _span.y);
+    return p;
 }

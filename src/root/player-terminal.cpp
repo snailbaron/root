@@ -32,7 +32,7 @@ PlayerTerminal::PlayerTerminal()
     _camera.screenSize({config().windowWidth, config().windowHeight});
 
     subscribe<PlayerSpawned>(worldEvents, [this] (const auto& playerSpawned) {
-        auto sprite = createSprite(Bitmap::Farmer);
+        auto sprite = createSprite(Bitmap::FarmerStandingDown);
         sprite.position = playerSpawned.position;
         _sprites[playerSpawned.entity] = std::move(sprite);
     });

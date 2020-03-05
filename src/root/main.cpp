@@ -1,7 +1,7 @@
 #include "config.hpp"
 #include "exceptions.hpp"
-#include "frame_timer.hpp"
 #include "player-terminal.hpp"
+#include "timers.hpp"
 #include "world.hpp"
 
 #include <SDL.h>

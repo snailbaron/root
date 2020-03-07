@@ -4,8 +4,8 @@ set(
         ${CMAKE_CURRENT_SOURCE_DIR}/bitmaps/grass.aseprite
 )
 
-set(gfx_data_file gfx-data.png)
-set(gfx_meta_file gfx-meta.json)
+set(gfx_data_file ${PROJECT_BINARY_DIR}/data/gfx-data.png)
+set(gfx_meta_file ${PROJECT_BINARY_DIR}/data/gfx-meta.json)
 
 add_custom_command(
     COMMENT "packing aseprite data"

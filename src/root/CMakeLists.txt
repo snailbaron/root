@@ -9,6 +9,12 @@ add_executable(
         world.cpp
 )
 
+set_target_properties(
+    root
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+)
+
 add_dependencies(root run-aseprite)
 target_link_libraries(
     root

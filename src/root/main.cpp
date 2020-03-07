@@ -12,7 +12,7 @@ namespace fs = std::filesystem;
 int main(int argc, char* argv[])
 {
     ASSERT(argc > 0);
-    dataPath(fs::path{argv[0]});
+    dataPath(fs::path{argv[0]}.parent_path() / "data");
 
     auto world = World{};
 

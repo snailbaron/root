@@ -11,6 +11,8 @@ World::World()
         movement.maxSpeed = worldConfig().maxPlayerSpeed;
 
         _es.add<PlayerControlComponent>(player);
+
+        worldEvents.push(PlayerSpawned{player, movement.position});
     });
 }
 

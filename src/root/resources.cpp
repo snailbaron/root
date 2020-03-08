@@ -1,4 +1,5 @@
 #include "assert.hpp"
+#include "config.hpp"
 #include "log.hpp"
 #include "resources.hpp"
 #include "util.hpp"
@@ -46,5 +47,10 @@ Resources::Resources()
 
 sf::Sprite Resources::createSprite(Bitmap bitmap)
 {
-    return {_megaTexture, _frames.at(bitmap).front()};
+    const auto& rect = _frames.at(bitmap).front();
+    auto sprite = sf::Sprite{_megaTexture, rect};
+    auto metersInPixel = 1.f / config().pixelsInMeter;
+    sprite.setScale(metersInPixel, metersInPixel);
+    sprite.setOrigin(rect.width / 2, rect.height / 2);
+    return sprite;
 }

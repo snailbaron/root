@@ -7,7 +7,8 @@ struct Config {
     unsigned windowWidth = 1024;
     unsigned windowHeight = 768;
     int fps = 60;
-    float cameraHorizontalSpanMeters = 10.0f;
+    float pixelsInMeter = 10.f;
+    int pixelation = 4;
 
 private:
     Config() {}

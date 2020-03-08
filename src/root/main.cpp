@@ -16,6 +16,8 @@ int main(int argc, char* argv[])
 
     auto world = World{};
 
+    clientRequests.push(SpawnPlayer{});
+
     auto playerTerminal = PlayerTerminal{};
     auto timer = FrameTimer{config().fps};
     for (;;) {
@@ -24,11 +26,17 @@ int main(int argc, char* argv[])
             break;
         }
 
-        auto framesPassed = timer();
-        for (auto i = framesPassed; i > 0; i--) {
+        int framesPassed = timer();
+
+        if (framesPassed > 0) {
+            clientRequests.deliver();
             world.update(Time{timer.delta()});
+            for (auto i = framesPassed; i > 1; i--) {
+                world.update(Time{timer.delta()});
+            }
         }
 
+        worldEvents.deliver();
         playerTerminal.update(framesPassed * timer.delta());
         playerTerminal.render();
     }

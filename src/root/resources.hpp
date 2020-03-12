@@ -11,6 +11,9 @@ class Resources {
 public:
     Resources();
 
+    const sf::Texture& megaTexture() const;
+    const sf::IntRect& frame(Bitmap bitmap) const;
+
     sf::Sprite createSprite(Bitmap bitmap);
 
 private:

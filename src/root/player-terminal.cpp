@@ -4,6 +4,8 @@
 #include "log.hpp"
 #include "player-terminal.hpp"
 
+#include <cmath>
+
 PlayerTerminal::PlayerTerminal()
 {
     _window.create(
@@ -17,6 +19,38 @@ PlayerTerminal::PlayerTerminal()
     _camera.setCenter(0.f, 0.f);
     log() << "camera size: " << _camera.getSize().x << ", " <<
         _camera.getSize().y << "\n";
+
+    {
+        const auto& grassFrame = _resources.frame(Bitmap::Grass);
+
+        auto w = grassFrame.width / config().pixelsInMeter;
+        auto h = grassFrame.height / config().pixelsInMeter;
+
+        auto xn =
+            _window.getSize().x / (grassFrame.width * config().pixelation) + 2;
+        auto yn =
+            _window.getSize().y / (grassFrame.height * config().pixelation) + 2;
+        auto x0 = -w * xn / 2.f;
+        auto y0 = -h * yn / 2.f;
+
+        _background.setPrimitiveType(sf::Quads);
+        _background.resize(xn * yn * 4);
+        for (unsigned x = 0; x < xn; x++) {
+            for (unsigned y = 0; y < yn; y++) {
+                auto cell = &_background[4 * (x + y * xn)];
+
+                cell[0].position = {x0 + x * w, y0 + y * h};
+                cell[1].position = {x0 + (x + 1) * w, y0 + y * h};
+                cell[2].position = {x0 + (x + 1) * w, y0 + (y + 1) * h};
+                cell[3].position = {x0 + x * w, y0 + (y + 1) * h};
+
+                cell[0].texCoords = {1.f * grassFrame.left, 1.f * grassFrame.top + grassFrame.height};
+                cell[1].texCoords = {1.f * grassFrame.left + grassFrame.width, 1.f * grassFrame.top + grassFrame.height};
+                cell[2].texCoords = {1.f * grassFrame.left + grassFrame.width, 1.f * grassFrame.top};
+                cell[3].texCoords = {1.f * grassFrame.left, 1.f * grassFrame.top};
+            }
+        }
+    }
 
     subscribe<PlayerSpawned>(worldEvents, [this] (const auto& playerSpawned) {
         auto sprite = _resources.createSprite(Bitmap::FarmerStandingDown);
@@ -58,6 +92,9 @@ void PlayerTerminal::render()
     _window.clear(sf::Color{30, 30, 30});
 
     _window.setView(_camera);
+
+    _window.draw(_background, sf::RenderStates{&_resources.megaTexture()});
+
     for (const auto& [entity, sprite] : _sprites) {
         _window.draw(sprite);
     }

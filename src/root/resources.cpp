@@ -45,6 +45,16 @@ Resources::Resources()
     }
 }
 
+const sf::Texture& Resources::megaTexture() const
+{
+    return _megaTexture;
+}
+
+const sf::IntRect& Resources::frame(Bitmap bitmap) const
+{
+    return _frames.at(bitmap).front();
+}
+
 sf::Sprite Resources::createSprite(Bitmap bitmap)
 {
     const auto& rect = _frames.at(bitmap).front();

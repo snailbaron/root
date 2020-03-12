@@ -23,5 +23,6 @@ private:
     sf::RenderWindow _window;
     sf::View _camera;
     std::map<Entity, sf::Sprite> _sprites;
+    sf::VertexArray _background;
     Resources _resources;
 };

@@ -3,11 +3,11 @@
 #include "world-units.hpp"
 
 struct MovementComponent {
+    Speed maxSpeed;
+    AbsoluteForce maxForce;
+    AbsoluteForce friction;
+
     Position position;
     Velocity velocity;
-    Speed maxSpeed;
-};
-
-struct PlayerControlComponent {
-    Acceleration force;
+    Force force;
 };

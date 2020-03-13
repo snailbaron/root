@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <optional>
 #include <map>
 
 class PlayerTerminal : public evening::Subscriber {
@@ -25,4 +26,5 @@ private:
     std::map<Entity, sf::Sprite> _sprites;
     sf::VertexArray _background;
     Resources _resources;
+    std::optional<Entity> _playerEntity;
 };

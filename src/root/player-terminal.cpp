@@ -11,11 +11,13 @@ PlayerTerminal::PlayerTerminal()
     _window.create(
         {config().windowWidth, config().windowHeight},
         config().windowTitle);
+    _window.setKeyRepeatEnabled(false);
 
     _camera.setSize(
         sf::Vector2f{_window.getSize()} /
             static_cast<float>(config().pixelation) /
             config().pixelsInMeter);
+    _camera.setSize(_camera.getSize().x, -_camera.getSize().y);
     _camera.setCenter(0.f, 0.f);
     log() << "camera size: " << _camera.getSize().x << ", " <<
         _camera.getSize().y << "\n";
@@ -56,6 +58,7 @@ PlayerTerminal::PlayerTerminal()
         auto sprite = _resources.createSprite(Bitmap::FarmerStandingDown);
         sprite.setPosition(*playerSpawned.position.x, *playerSpawned.position.y);
         _sprites[playerSpawned.entity] = std::move(sprite);
+        _playerEntity = playerSpawned.entity;
         log() << "created player sprite\n";
     });
     subscribe<PositionUpdated>(worldEvents, [this] (const auto& e) {
@@ -72,13 +75,30 @@ void PlayerTerminal::processEvents()
 {
     sf::Event event;
     while (_window.pollEvent(event)) {
-        switch (event.type) {
-            case sf::Event::Closed:
-                _window.close();
-                break;
-
-            default:
-                break;
+        if (event.type == sf::Event::Closed) {
+            _window.close();
+        } else if (event.type == sf::Event::KeyPressed ||
+                event.type == sf::Event::KeyReleased) {
+            if (_playerEntity && (
+                    event.key.code == config().moveUp ||
+                    event.key.code == config().moveDown ||
+                    event.key.code == config().moveLeft ||
+                    event.key.code == config().moveRight)) {
+                auto request = MovePlayer{*_playerEntity, {}};
+                if (sf::Keyboard::isKeyPressed(config().moveRight)) {
+                    request.control.x += 1.f;
+                }
+                if (sf::Keyboard::isKeyPressed(config().moveLeft)) {
+                    request.control.x -= 1.f;
+                }
+                if (sf::Keyboard::isKeyPressed(config().moveUp)) {
+                    request.control.y += 1.f;
+                }
+                if (sf::Keyboard::isKeyPressed(config().moveDown)) {
+                    request.control.y -= 1.f;
+                }
+                clientRequests.push(request);
+            }
         }
     }
 }

@@ -2,6 +2,9 @@
 
 #include "type_traits.hpp"
 
+#include <algorithm>
+#include <cmath>
+#include <ostream>
 #include <utility>
 
 namespace geometry {
@@ -22,18 +25,50 @@ struct Vector {
         return *this;
     }
 
-    constexpr Vector& operator*=(const T& scalar)
+    template <class S>
+    constexpr Vector& operator*=(const S& scalar)
     {
         x *= scalar;
         y *= scalar;
         return *this;
     }
 
-    constexpr Vector& operator/=(const T& scalar)
+    template <class S>
+    constexpr Vector& operator/=(const S& scalar)
     {
         x /= scalar;
         y /= scalar;
         return *this;
+    }
+
+    void limit(const T& value)
+    {
+        auto sqlen = x * x + y * y;
+        if (sqlen > value * value) {
+            auto len = sqrt(sqlen);
+            x *= value / len;
+            y *= value / len;
+        }
+    }
+
+    auto norm() const
+    {
+        return sqrt(x * x + y * y);
+    }
+
+    bool nonzero() const
+    {
+        return x != T{0} || y != T{0};
+    }
+
+    void shortenBy(const T& value)
+    {
+        if (nonzero()) {
+            auto length = norm();
+            auto newLength = std::max(T{0}, length - value);
+            x *= newLength / length;
+            y *= newLength / length;
+        }
     }
 
     T x;
@@ -70,6 +105,12 @@ template <class T, class S>
 constexpr Vector<div_type_t<T, S>> operator/(Vector<T> vector, const S& scalar)
 {
     return {vector.x / scalar, vector.y / scalar};
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream& output, const Vector<T>& vector)
+{
+    return output << "(" << vector.x << ", " << vector.y << ")";
 }
 
 } // namespace geometry

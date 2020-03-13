@@ -10,6 +10,11 @@ inline evening::Channel clientRequests;
 
 struct SpawnPlayer {};
 
+struct MovePlayer {
+    Entity entity;
+    Vector2 control;
+};
+
 struct PositionUpdated {
     Entity entity;
     Position position;

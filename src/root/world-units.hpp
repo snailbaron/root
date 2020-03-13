@@ -4,6 +4,15 @@
 #include "units.hpp"
 
 using Length = units::Length<float>;
+constexpr Length operator "" _m(long double meters)
+{
+    return Length{static_cast<float>(meters)};
+}
+constexpr Length operator "" _m(unsigned long long meters)
+{
+    return Length{static_cast<float>(meters)};
+}
+
 using Position = geometry::Vector<units::Length<float>>;
 using WorldRect = geometry::Vector<units::Length<float>>;
 using Vector2 = geometry::Vector<float>;

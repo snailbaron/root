@@ -11,3 +11,7 @@ struct MovementComponent {
     Velocity velocity;
     Force force;
 };
+
+struct CollisionComponent {
+    Length radius;
+};

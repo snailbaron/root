@@ -2,6 +2,8 @@ set(
     aseprite_assets
         ${CMAKE_CURRENT_SOURCE_DIR}/bitmaps/farmer.aseprite
         ${CMAKE_CURRENT_SOURCE_DIR}/bitmaps/grass.aseprite
+        ${CMAKE_CURRENT_SOURCE_DIR}/bitmaps/house.aseprite
+        ${CMAKE_CURRENT_SOURCE_DIR}/bitmaps/tree.aseprite
 )
 
 set(gfx_data_file ${PROJECT_BINARY_DIR}/data/gfx-data.png)

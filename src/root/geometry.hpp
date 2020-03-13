@@ -113,4 +113,27 @@ std::ostream& operator<<(std::ostream& output, const Vector<T>& vector)
     return output << "(" << vector.x << ", " << vector.y << ")";
 }
 
+template <class T>
+T norm(const Vector<T>& vector)
+{
+    return vector.norm();
+}
+
+template <class T>
+Vector<div_type_t<T, T>> unit(const Vector<T>& vector)
+{
+    auto n = norm(vector);
+    if (n != T{0}) {
+        return vector / n;
+    } else {
+        return Vector<T>{T{0}, T{1}} / T{1};
+    }
+}
+
+template <class T>
+T distance(const Vector<T>& lhs, const Vector<T>& rhs)
+{
+    return norm(lhs - rhs);
+}
+
 } // namespace geometry

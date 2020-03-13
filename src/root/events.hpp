@@ -8,7 +8,20 @@
 inline evening::Channel worldEvents;
 inline evening::Channel clientRequests;
 
-struct SpawnPlayer {};
+enum ObjectType {
+    House,
+    Player,
+    Tree,
+};
+
+struct SpawnObject {
+    ObjectType objectType;
+    Position position;
+};
+
+struct PlantTree {
+    Entity player;
+};
 
 struct MovePlayer {
     Entity entity;
@@ -20,7 +33,8 @@ struct PositionUpdated {
     Position position;
 };
 
-struct PlayerSpawned {
+struct ObjectSpawned {
     Entity entity;
+    ObjectType objectType;
     Position position;
 };

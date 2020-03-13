@@ -16,6 +16,7 @@ struct Config {
     sf::Keyboard::Key moveDown = sf::Keyboard::S;
     sf::Keyboard::Key moveLeft = sf::Keyboard::A;
     sf::Keyboard::Key moveRight = sf::Keyboard::D;
+    sf::Keyboard::Key plantTree = sf::Keyboard::Space;
 
 private:
     Config() {}

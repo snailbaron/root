@@ -51,6 +51,11 @@ public:
         return _value;
     }
 
+    Unit operator-()
+    {
+        return Unit{-_value};
+    }
+
     Unit& operator+=(const Unit& other)
     {
         _value += other._value;

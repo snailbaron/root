@@ -54,13 +54,23 @@ PlayerTerminal::PlayerTerminal()
         }
     }
 
-    subscribe<PlayerSpawned>(worldEvents, [this] (const auto& playerSpawned) {
-        auto sprite = _resources.createSprite(Bitmap::FarmerStandingDown);
-        sprite.setPosition(*playerSpawned.position.x, *playerSpawned.position.y);
-        _sprites[playerSpawned.entity] = std::move(sprite);
-        _playerEntity = playerSpawned.entity;
-        log() << "created player sprite\n";
+    subscribe<ObjectSpawned>(worldEvents, [this] (const auto& event) {
+        sf::Sprite sprite;
+        if (event.objectType == ObjectType::Player) {
+            sprite = _resources.createSprite(Bitmap::FarmerStandingDown);
+            _playerEntity = event.entity;
+        } else if (event.objectType == ObjectType::House) {
+            sprite = _resources.createSprite(Bitmap::House);
+        } else if (event.objectType == ObjectType::Tree) {
+            sprite = _resources.createSprite(Bitmap::Tree);
+        } else {
+            return;
+        }
+
+        sprite.setPosition(*event.position.x, *event.position.y);
+        _sprites[event.entity] = std::move(sprite);
     });
+
     subscribe<PositionUpdated>(worldEvents, [this] (const auto& e) {
         _sprites.at(e.entity).setPosition(*e.position.x, *e.position.y);
     });
@@ -77,27 +87,33 @@ void PlayerTerminal::processEvents()
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             _window.close();
-        } else if (event.type == sf::Event::KeyPressed ||
-                event.type == sf::Event::KeyReleased) {
-            if (_playerEntity && (
+        } else if (
+                (event.type == sf::Event::KeyPressed ||
+                    event.type == sf::Event::KeyReleased) &&
+                _playerEntity && (
                     event.key.code == config().moveUp ||
                     event.key.code == config().moveDown ||
                     event.key.code == config().moveLeft ||
-                    event.key.code == config().moveRight)) {
-                auto request = MovePlayer{*_playerEntity, {}};
-                if (sf::Keyboard::isKeyPressed(config().moveRight)) {
-                    request.control.x += 1.f;
-                }
-                if (sf::Keyboard::isKeyPressed(config().moveLeft)) {
-                    request.control.x -= 1.f;
-                }
-                if (sf::Keyboard::isKeyPressed(config().moveUp)) {
-                    request.control.y += 1.f;
-                }
-                if (sf::Keyboard::isKeyPressed(config().moveDown)) {
-                    request.control.y -= 1.f;
-                }
-                clientRequests.push(request);
+                    event.key.code == config().moveRight
+                )) {
+            auto request = MovePlayer{*_playerEntity, {}};
+            if (sf::Keyboard::isKeyPressed(config().moveRight)) {
+                request.control.x += 1.f;
+            }
+            if (sf::Keyboard::isKeyPressed(config().moveLeft)) {
+                request.control.x -= 1.f;
+            }
+            if (sf::Keyboard::isKeyPressed(config().moveUp)) {
+                request.control.y += 1.f;
+            }
+            if (sf::Keyboard::isKeyPressed(config().moveDown)) {
+                request.control.y -= 1.f;
+            }
+            clientRequests.push(request);
+        } else if (event.type == sf::Event::KeyPressed &&
+                event.key.code == config().plantTree) {
+            if (_playerEntity) {
+                clientRequests.push(PlantTree{*_playerEntity});
             }
         }
     }

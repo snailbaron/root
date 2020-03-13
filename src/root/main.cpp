@@ -16,7 +16,9 @@ int main(int argc, char* argv[])
 
     auto world = World{};
 
-    clientRequests.push(SpawnPlayer{});
+    clientRequests.push(SpawnObject{ObjectType::House, {-5_m, 5_m}});
+    clientRequests.push(SpawnObject{ObjectType::Tree, {5_m, 5_m}});
+    clientRequests.push(SpawnObject{ObjectType::Player, {}});
 
     auto playerTerminal = PlayerTerminal{};
     auto timer = FrameTimer{config().fps};

@@ -59,6 +59,7 @@ PlayerTerminal::PlayerTerminal()
         if (event.objectType == ObjectType::Player) {
             sprite = _resources.createSprite(Bitmap::FarmerStandingDown);
             _playerEntity = event.entity;
+            _playerPosition = {*event.position.x, *event.position.y};
         } else if (event.objectType == ObjectType::House) {
             sprite = _resources.createSprite(Bitmap::House);
         } else if (event.objectType == ObjectType::Tree) {
@@ -73,6 +74,9 @@ PlayerTerminal::PlayerTerminal()
 
     subscribe<PositionUpdated>(worldEvents, [this] (const auto& e) {
         _sprites.at(e.entity).setPosition(*e.position.x, *e.position.y);
+        if (e.entity == _playerEntity) {
+            _playerPosition = {*e.position.x, *e.position.y};
+        }
     });
 }
 
@@ -119,8 +123,10 @@ void PlayerTerminal::processEvents()
     }
 }
 
-void PlayerTerminal::update(float /*delta*/)
+void PlayerTerminal::update(float delta)
 {
+    const auto& p = _camera.getCenter();
+    _camera.setCenter(p + 10 * delta * (_playerPosition - p));
 }
 
 void PlayerTerminal::render()
@@ -129,7 +135,14 @@ void PlayerTerminal::render()
 
     _window.setView(_camera);
 
-    _window.draw(_background, sf::RenderStates{&_resources.megaTexture()});
+    {
+        auto states = sf::RenderStates{};
+        states.texture = &_resources.megaTexture();
+        auto m = 16 / config().pixelsInMeter;
+        auto c = _camera.getCenter();
+        states.transform.translate(std::floor(c.x / m) * m, std::floor(c.y / m) * m);
+        _window.draw(_background, states);
+    }
 
     for (const auto& [entity, sprite] : _sprites) {
         _window.draw(sprite);

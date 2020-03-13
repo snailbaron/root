@@ -2,6 +2,7 @@
 
 #include "entity-system.hpp"
 #include "resources.hpp"
+#include "tasks.hpp"
 
 #include <evening.hpp>
 
@@ -27,4 +28,5 @@ private:
     sf::VertexArray _background;
     Resources _resources;
     std::optional<Entity> _playerEntity;
+    sf::Vector2f _playerPosition;
 };

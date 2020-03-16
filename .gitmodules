@@ -10,3 +10,6 @@
 [submodule "deps/SFML"]
 	path = deps/SFML
 	url = https://github.com/SFML/SFML.git
+[submodule "deps/protobuf"]
+	path = deps/protobuf
+	url = https://github.com/protocolbuffers/protobuf.git

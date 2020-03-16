@@ -5,6 +5,10 @@ set(ENABLE_UPDATER OFF CACHE BOOL "")
 set(WITH_WEBP_SUPPORT OFF CACHE BOOL "")
 add_subdirectory(aseprite)
 
+add_subdirectory(SFML)
 add_subdirectory(evening)
 add_subdirectory(json)
-add_subdirectory(SFML)
+
+set(protobuf_WITH_ZLIB OFF CACHE BOOL "")
+add_subdirectory(protobuf/cmake)
+

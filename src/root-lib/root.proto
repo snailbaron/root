@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package root.events;
+
+message Position {
+  float x = 1;
+  float y = 2;
+}
+
+message Control {
+  float x = 1;
+  float y = 2;
+}
+
+enum ObjectType {
+  HOUSE = 0;
+  PLAYER = 1;
+  TREE = 2;
+}
+
+message SpawnObject {
+  ObjectType object_type = 1;
+  Position position = 2;
+}
+
+message PlantTree {
+  uint64 player_entity = 1;
+}
+
+message MovePlayer {
+  uint64 player_entity = 1;
+  Control control = 2;
+}
+
+message PositionUpdated {
+  uint64 entity = 1;
+  Position position = 2;
+}
+
+message ObjectSpawned {
+  uint64 entity = 1;
+  ObjectType object_type = 2;
+  Position position = 3;
+}

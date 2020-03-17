@@ -7,40 +7,49 @@
 
 World::World()
 {
-    subscribe<SpawnObject>(clientRequests, [this] (const auto& request) {
+    subscribe<evt::SpawnObject>(clientRequests, [this] (const auto& request) {
         log() << "spawn requested\n";
 
         auto object = _es.createEntity();
 
         auto& movement = _es.add<MovementComponent>(object);
-        if (request.objectType == ObjectType::Player) {
+        if (request.object_type() == evt::OBJECT_TYPE_PLAYER) {
             movement.maxSpeed = worldConfig().maxPlayerSpeed;
             movement.maxForce = worldConfig().maxPlayerAcceleration;
             movement.friction = worldConfig().playerFriction;
         }
-        movement.position = request.position;
+        movement.position = decode(request.position());
 
         auto& collision = _es.add<CollisionComponent>(object);
         collision.radius = 1_m;
 
-        worldEvents.push(
-            ObjectSpawned{object, request.objectType, movement.position});
+        evt::ObjectSpawned e;
+        e.set_entity(object);
+        e.set_object_type(request.object_type());
+        encode(e.mutable_position(), movement.position);
+        worldEvents.push(e);
     });
 
-    subscribe<MovePlayer>(clientRequests, [this] (const auto& request) {
-        auto movement = _es.component<MovementComponent>(request.entity);
+    subscribe<evt::MovePlayer>(clientRequests, [this] (const auto& request) {
+        auto movement = _es.component<MovementComponent>(
+            Entity{request.player_entity()});
         movement->force = {
-            request.control.x * movement->maxForce,
-            request.control.y * movement->maxForce
+            request.control().x() * movement->maxForce,
+            request.control().y() * movement->maxForce
         };
         movement->force.limit(movement->maxForce);
     });
 
-    subscribe<PlantTree>(clientRequests, [this] (const auto& request) {
+    subscribe<evt::PlantTree>(clientRequests, [this] (const auto& request) {
         log() << "plant requested\n";
 
-        auto movement = _es.component<MovementComponent>(request.player);
-        clientRequests.send(SpawnObject{ObjectType::Tree, movement->position});
+        auto movement = _es.component<MovementComponent>(
+            Entity{request.player_entity()});
+
+        evt::SpawnObject e;
+        e.set_object_type(evt::OBJECT_TYPE_TREE);
+        encode(e.mutable_position(), movement->position);
+        clientRequests.send(e);
     });
 }
 
@@ -55,7 +64,12 @@ void World::update(Time delta)
         movement->velocity.shortenBy(movement->friction * delta);
         movement->velocity.limit(movement->maxSpeed);
         movement->position += movement->velocity * delta;
-        worldEvents.push(PositionUpdated{e, movement->position});
+
+        evt::PositionUpdated event;
+        event.set_entity(e);
+        event.mutable_position()->set_x(*movement->position.x);
+        event.mutable_position()->set_y(*movement->position.y);
+        worldEvents.push(event);
     }
 
     {

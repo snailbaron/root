@@ -12,5 +12,7 @@ set_target_properties(
 target_link_libraries(
     root-server
         PRIVATE
+            root-lib
+
             sfml-network
 )

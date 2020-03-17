@@ -1,12 +1,9 @@
 add_executable(
     root
-        entity-system.cpp
         main.cpp
         player-terminal.cpp
         resources.cpp
-        timers.cpp
         util.cpp
-        world.cpp
 )
 
 set_target_properties(
@@ -23,4 +20,5 @@ target_link_libraries(
             nlohmann_json::nlohmann_json
 
             evening
+            root-lib
 )

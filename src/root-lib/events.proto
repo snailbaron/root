@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package root.events;
+package evt;
 
 message Position {
   float x = 1;
@@ -13,9 +13,9 @@ message Control {
 }
 
 enum ObjectType {
-  HOUSE = 0;
-  PLAYER = 1;
-  TREE = 2;
+  OBJECT_TYPE_HOUSE = 0;
+  OBJECT_TYPE_PLAYER = 1;
+  OBJECT_TYPE_TREE = 2;
 }
 
 message SpawnObject {
